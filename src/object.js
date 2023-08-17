@@ -1,61 +1,83 @@
-function ObjectUtil() {
-	const obj = {
-		data: {},
-		updateByPath: (path, value) => {
-			const keys = path.split('.');
-			let currentObj = obj.data;
+const strUtils = require("./string");
 
-			for (let i = 0; i < keys.length - 1; i++) {
-				const key = keys[i];
-				if (!currentObj[key]) {
-					currentObj[key] = {};
-				}
-				currentObj = currentObj[key];
-			}
-
-			const lastKey = keys[keys.length - 1];
-			currentObj[lastKey] = value;
-		},
-		keys: (path = "") => {
-			const keys = path.split('.');
-			let currentObj = obj.data;
-
-			for (const key of keys) {
-				if (path) {
-					if (path && currentObj.hasOwnProperty(key)) {
-						return []; // Path doesn't exist in the object
-					}
-					currentObj = currentObj[key];
-				}
-			}
-
-			if (typeof currentObj !== 'object' || currentObj === null) {
-				return []; // The path doesn't lead to an object
-			}
-			return Object.keys(currentObj);
-		},
-		values: (path = "") => {
-			const keys = path.split('.');
-			let currentObj = obj.data;
-
-			for (const key of keys) {
-				if (path) {
-					if (path && currentObj.hasOwnProperty(key)) {
-						return []; // Path doesn't exist in the object
-					}
-					currentObj = currentObj[key];
-				}
-			}
-
-			if (typeof currentObj !== 'object' || currentObj === null) {
-				return []; // The path doesn't lead to an object
-			}
-
-			return Object.values(currentObj);
-		}
-	};
-
-	return obj;
+Object.isObject = (obj) => {
+	return (obj && typeof obj === 'object' && !Array.isArray(obj));
 }
 
-export default Object;
+Object.getByPath = (obj, path) => {
+	if (!Object.isObject(obj)) return;
+	const keys = path.split('.');
+	let currentObj = obj;
+
+	for (const key of keys) {
+		if (path) {
+			if (path && currentObj.hasOwnProperty(key)) {
+				return []; // Path doesn't exist in the object
+			}
+			currentObj = currentObj[key];
+		}
+	}
+	return currentObj;
+}
+
+Object.keysByPath = (obj, path) => {
+	if (!Object.isObject(obj)) return;
+	const currentObj = Object.getByPath(obj, path);
+	return Object.keys(currentObj);
+}
+
+Object.valuesByPath = (obj, path) => {
+	if (!Object.isObject(obj)) return;
+	const currentObj = Object.getByPath(obj, path);
+	return Object.values(currentObj);
+}
+
+Object.updateByPath = (obj, path, value) => {
+	if (!Object.isObject(obj)) return;
+	console.log(typeof obj)
+	const keys = path.split('.');
+	let currentObj = obj;
+
+	for (let i = 0; i < keys.length - 1; i++) {
+		const key = keys[i];
+		if (!currentObj[key]) {
+			currentObj[key] = {};
+		}
+		currentObj = currentObj[key];
+	}
+
+	const lastKey = keys[keys.length - 1];
+	currentObj[lastKey] = value;
+}
+
+Object.slugifyKeys = (obj, options = {
+	depth: 1,
+}) => {
+	if (typeof obj !== 'object') return obj;
+
+	if (Array.isArray(obj)) {
+		return obj.data.map(item => Object.slugifyKeys(item));
+	}
+
+	const result = {};
+	for (const key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			result[strUtils.slugify(key)] = Object.slugifyKeys(obj[key]);
+		}
+	}
+	return result;
+}
+
+let a = {
+	"rand aAfd": 5,
+	"test er": {
+		"nother a": {
+			"Again": 3
+		},
+		"yes": 2
+	}
+}
+
+let b = Object.slugifyKeys(a);
+
+console.log(b);
