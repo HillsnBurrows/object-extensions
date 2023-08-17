@@ -1,4 +1,4 @@
-function ObjectManager() {
+function ObjectUtil() {
 	const obj = {
 		data: {},
 		updateByPath: (path, value) => {
@@ -58,4 +58,4 @@ function ObjectManager() {
 	return obj;
 }
 
-export default ObjectManager;
+export default Object;
