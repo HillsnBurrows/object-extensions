@@ -34,7 +34,6 @@ Object.valuesByPath = (obj, path) => {
 
 Object.updateByPath = (obj, path, value) => {
 	if (!Object.isObject(obj)) return;
-	console.log(typeof obj)
 	const keys = path.split('.');
 	let currentObj = obj;
 
