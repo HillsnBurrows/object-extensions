@@ -1,4 +1,4 @@
-const strUtils = require("./string");
+import stringUtils from "./string";
 
 Object.isObject = (obj) => {
 	return (obj && typeof obj === 'object' && !Array.isArray(obj));
@@ -62,22 +62,18 @@ Object.slugifyKeys = (obj, options = {
 	const result = {};
 	for (const key in obj) {
 		if (obj.hasOwnProperty(key)) {
-			result[strUtils.slugify(key)] = Object.slugifyKeys(obj[key]);
+			result[stringUtils.slugify(key)] = Object.slugifyKeys(obj[key]);
 		}
 	}
 	return result;
 }
 
-let a = {
-	"rand aAfd": 5,
-	"test er": {
-		"nother a": {
-			"Again": 3
-		},
-		"yes": 2
-	}
+
+export default {
+	isObject: Object.isObject,
+	slugifyKeys: Object.slugifyKeys,
+	updateByPath: Object.updateByPath,
+	valuesByPath: Object.valuesByPath,
+	keysByPath: Object.keysByPath,
+	getByPath: Object.getByPath,
 }
-
-let b = Object.slugifyKeys(a);
-
-console.log(b);
