@@ -1,0 +1,7 @@
+{
+  "name": "@damagex/object-extensions",
+  "version": "0.0.1",
+  "description": "A collection of extensions for objects in JavaScript",
+  "dependencies": {
+  }
+}
